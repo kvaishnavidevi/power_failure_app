@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power Failure Details - TNEB</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 50px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .details {
+            display: none;
+            margin-top: 20px;
+        }
+        .details h2 {
+            color: #333;
+        }
+        .details .info {
+            margin-bottom: 20px;
+        }
+        #map {
+            width: 100%;
+            height: 300px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>TNEB Power Failure Details</h1>
+    <form id="serviceForm">
+        <label for="serviceId">Enter Service ID:</label>
+        <input type="text" id="serviceId" name="serviceId" placeholder="04-053-283-9133" required>
+        <input type="submit" value="Get Details">
+    </form>
+
+    <div class="details" id="details">
+        <h2>Service ID Details</h2>
+        <div class="info">
+            <strong>Address:</strong> <span id="address">N/A</span><br>
+            <strong>Google Map Location:</strong> <span id="mapLocation">N/A</span>
+        </div>
+
+        <h3>Contact Information</h3>
+        <div class="info">
+            <strong>Assistant Engineer:</strong> <span id="ae">N/A</span><br>
+            <strong>Lineman:</strong> <span id="lineman">N/A</span><br>
+            <strong>Supervisor:</strong> <span id="supervisor">N/A</span>
+        </div>
+
+        <div id="map"></div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('serviceForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        // Retrieve the entered service ID
+        const serviceId = document.getElementById('serviceId').value;
+
+        // Simulate a data lookup for multiple service IDs
+        const serviceData = {
+            "04-053-283-9133": {
+                address: "123 Main Street, Chennai, Tamil Nadu",
+                mapLocation: { lat: 13.0827, lng: 80.2707 },
+                ae: "John Doe",
+                lineman: "Ravi Kumar",
+                supervisor: "Suresh Sharma"
+            },
+            "04-053-283-9144": {
+                address: "456 Gandhi Road, Madurai, Tamil Nadu",
+                mapLocation: { lat: 9.9252, lng: 78.1198 },
+                ae: "Mohan Raj",
+                lineman: "Vijay Kumar",
+                supervisor: "Dinesh Karthik"
+            },
+            "04-053-283-9155": {
+                address: "789 Anna Nagar, Coimbatore, Tamil Nadu",
+                mapLocation: { lat: 11.0168, lng: 76.9558 },
+                ae: "Rajesh Kumar",
+                lineman: "Saravanan S",
+                supervisor: "Manikandan R"
+            }
+        };
+
+        // Get the details based on the entered service ID or show "not found"
+        const details = serviceData[serviceId] || {
+            address: "Service ID not found",
+            mapLocation: { lat: 0, lng: 0 },
+            ae: "N/A",
+            lineman: "N/A",
+            supervisor: "N/A"
+        };
+
+        // Display fetched data
+        document.getElementById('address').textContent = details.address;
+        document.getElementById('ae').textContent = details.ae;
+        document.getElementById('lineman').textContent = details.lineman;
+        document.getElementById('supervisor').textContent = details.supervisor;
+
+        // Initialize the map with the fetched location (only show if valid location)
+        if (details.mapLocation.lat !== 0 && details.mapLocation.lng !== 0) {
+            initMap(details.mapLocation.lat, details.mapLocation.lng);
+        }
+
+        // Show the details section
+        document.getElementById('details').style.display = 'block';
+    });
+
+    function initMap(lat, lng) {
+        const map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: lat, lng: lng },
+            zoom: 15
+        });
+        const marker = new google.maps.Marker({
+            position: { lat: lat, lng: lng },
+            map: map
+        });
+    }
+</script>
+
+<!-- Google Maps API for development mode (no API key required) -->
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?callback=initMap">
+</script>
+
+</body>
+</html>
